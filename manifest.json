@@ -1,0 +1,8 @@
+{
+  "name": "OTC Deal Scanner",
+  "short_name": "Scanner",
+  "display": "standalone",
+  "start_url": "index.html",
+  "background_color": "#ffffff",
+  "description": "OTC reseller barcode scanner"
+}
