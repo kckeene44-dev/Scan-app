@@ -1,133 +1,26 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>OTC Deal Scanner</title>
+<title>OTC Scanner POS</title>
 <link rel="manifest" href="manifest.json">
-<style>
-body{font-family:Arial;margin:0;background:#f4f4f4}
-header{background:#111;color:white;padding:14px;text-align:center}
-.card{background:white;margin:12px;padding:12px;border-radius:8px}
-button{padding:12px 16px;font-size:16px;margin-top:6px}
-input{width:100%;padding:8px;margin:4px 0}
-</style>
+<link rel="stylesheet" href="style.css">
+<script src="https://unpkg.com/html5-qrcode"></script>
 </head>
 <body>
 
-<header>
-<h2>OTC Deal Scanner</h2>
-<p>Scan • Track • Profit</p>
-</header>
+<header>OTC Scanner POS</header>
 
-<div class="card">
-<button onclick="startScanner()">Scan Barcode</button>
+<div class="menu">
+<button onclick="startScanner()">Scan Product</button>
+<button onclick="showInventory()">Inventory</button>
+<button onclick="showCart()">Cart</button>
+<button onclick="showInvoices()">Invoices</button>
+</div>
+
 <div id="scanner"></div>
-</div>
+<div id="content"></div>
 
-<div class="card">
-<h3>Last Scan</h3>
-<div id="result">No barcode scanned</div>
-</div>
-
-<div class="card">
-<h3>Add Product</h3>
-<input id="name" placeholder="Item name">
-<input id="buy" placeholder="Buy price">
-<input id="sell" placeholder="Retail price">
-<input id="qty" placeholder="Quantity">
-<button onclick="saveItem()">Save</button>
-</div>
-
-<div class="card">
-<h3>Inventory</h3>
-<div id="inventory"></div>
-</div>
-
-<script src="https://unpkg.com/quagga/dist/quagga.min.js"></script>
-
-<script>
-let lastUPC=null
-
-function startScanner(){
-
-Quagga.init({
-inputStream:{
-type:"LiveStream",
-target:document.querySelector('#scanner'),
-constraints:{facingMode:"environment"
-}
-},
-decoder:{readers:["upc_reader","ean_reader"]}
-
-},function(err){
-
-if(err){console.log(err);return}
-Quagga.start()
-
-})
-
-Quagga.onDetected(function(data){
-
-let code=data.codeResult.code
-lastUPC=code
-document.getElementById("result").innerHTML="UPC: "+code
-Quagga.stop()
-
-})
-
-}
-
-function saveItem(){
-
-if(!lastUPC){alert("Scan barcode first");return}
-
-let item={
-upc:lastUPC,
-name:document.getElementById("name").value,
-buy:parseFloat(document.getElementById("buy").value||0),
-sell:parseFloat(document.getElementById("sell").value||0),
-qty:parseInt(document.getElementById("qty").value||0)
-}
-
-let db=JSON.parse(localStorage.getItem("inventory")||"[]")
-db.push(item)
-localStorage.setItem("inventory",JSON.stringify(db))
-
-renderInventory()
-
-}
-
-function renderInventory(){
-
-let db=JSON.parse(localStorage.getItem("inventory")||"[]")
-
-let html=""
-
-db.forEach(i=>{
-
-let profit=(i.sell-i.buy)*i.qty
-
-html+=`<div>
-<b>${i.name}</b><br>
-UPC: ${i.upc}<br>
-Qty: ${i.qty}<br>
-Profit Potential: $${profit.toFixed(2)}
-</div><hr>`
-
-})
-
-document.getElementById("inventory").innerHTML=html
-
-}
-
-renderInventory()
-
-if ('serviceWorker' in navigator) {
-navigator.serviceWorker.register('sw.js')
-}
-
-</script>
-
+<script src="app.js"></script>
 </body>
 </html>
