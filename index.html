@@ -1,9 +1,13 @@
 <!DOCTYPE html>
 <html>
 <head>
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#111111">
+<meta name="description" content="OTC Scanner POS - A point of sale system with barcode scanning">
 <title>OTC Scanner POS</title>
 <link rel="manifest" href="manifest.json">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect fill='%23111111' width='192' height='192'/><text x='50%' y='50%' font-size='80' fill='white' text-anchor='middle' dominant-baseline='middle'>📱</text></svg>">
 <link rel="stylesheet" href="style.css">
 <script src="https://unpkg.com/html5-qrcode"></script>
 </head>
@@ -22,5 +26,20 @@
 <div id="content"></div>
 
 <script src="app.js"></script>
+<script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('service-worker.js').then(reg => {
+    console.log('Service Worker registered successfully:', reg);
+  }).catch(err => {
+    console.log('Service Worker registration failed:', err);
+  });
+}
+
+if ('storage' in navigator && 'estimate' in navigator.storage) {
+  navigator.storage.estimate().then(estimate => {
+    console.log('Storage quota:', estimate.quota, 'Usage:', estimate.usage);
+  });
+}
+</script>
 </body>
 </html>
